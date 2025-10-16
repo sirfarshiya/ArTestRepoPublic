@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+"""
+sample_date_compare.py
+
+Simple command-line program to compare two dates/times.
+
+Usage:
+    python sample_date_compare.py "2025-10-16" "16/10/2025 00:00"
+    python sample_date_compare.py "2025-10-16T12:00:00" "2024-01-01" --format "%Y-%m-%dT%H:%M:%S"
+"""
+
+from __future__ import annotations
+import argparse
+from datetime import datetime, timedelta
+import sys
+
+# Try to use dateutil if available for flexible parsing and relativedelta for months/years diff
+try:
+        from dateutil import parser as du_parser
+        from dateutil.relativedelta import relativedelta
+        HAS_DATEUTIL = True
+except Exception:
+        HAS_DATEUTIL = False
+
+COMMON_FORMATS = [
+        "%Y-%m-%dT%H:%M:%S%z",
+        "%Y-%m-%dT%H:%M:%S",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d",
+        "%d/%m/%Y %H:%M:%S",
+        "%d/%m/%Y %H:%M",
+        "%d/%m/%Y",
+        "%m/%d/%Y",
+        "%d-%b-%Y",
+        "%d %b %Y",
+]
+
+
+def parse_date(s: str, fmt: str | None = None) -> datetime:
+        s = s.strip()
+        if fmt:
+                return datetime.strptime(s, fmt)
+        if HAS_DATEUTIL:
+                # dateutil can parse many human formats and timezone-aware strings
+                return du_parser.parse(s)
+        last_err = None
+        for f in COMMON_FORMATS:
+                try:
+                        return datetime.strptime(s, f)
+                except Exception as e:
+                        last_err = e
+        # if nothing matched, raise the last exception for the caller
+        raise ValueError(f"Could not parse date '{s}'. Try --format or install python-dateutil.") from last_err
+
+
+def human_timedelta(delta: timedelta) -> str:
+        total_seconds = int(abs(delta).total_seconds())
+        days, rem = divmod(total_seconds, 86400)
+        hours, rem = divmod(rem, 3600)
+        minutes, seconds = divmod(rem, 60)
+        parts = []
+        if days:
+                parts.append(f"{days}d")
+        if hours:
+                parts.append(f"{hours}h")
+        if minutes:
+                parts.append(f"{minutes}m")
+        if seconds or not parts:
+                parts.append(f"{seconds}s")
+        return " ".join(parts)
+
+
+def approximate_years_months(a: datetime, b: datetime) -> str:
+        if HAS_DATEUTIL:
+                rd = relativedelta(b, a)
+                yrs = abs(rd.years)
+                months = abs(rd.months)
+                days = abs(rd.days)
+                return f"{yrs} years, {months} months, {days} days"
+        # crude approximation without dateutil
+        diff_days = abs((b - a).days)
+        years = diff_days // 365
+        months = (diff_days % 365) // 30
+        days = (diff_days % 365) % 30
+        return f"~{years} years, {months} months, {days} days"
+
+
+def compare_dates(a: datetime, b: datetime) -> str:
+        if a == b:
+                return "equal"
+        elif a < b:
+                return "earlier"
+        else:
+                return "later"
+
+
+def main(argv=None):
+        p = argparse.ArgumentParser(description="Compare two dates/times and show the difference.")
+        p.add_argument("date1", help="First date/time (quoted if contains spaces)")
+        p.add_argument("date2", help="Second date/time (quoted if contains spaces)")
+        p.add_argument("--format", "-f", help="Optional strptime format to parse both dates")
+        p.add_argument("--show-iso", action="store_true", help="Show parsed datetimes in ISO format")
+        args = p.parse_args(argv)
+
+        try:
+                dt1 = parse_date(args.date1, fmt=args.format)
+                dt2 = parse_date(args.date2, fmt=args.format)
+        except Exception as e:
+                print(f"Error parsing dates: {e}", file=sys.stderr)
+                sys.exit(2)
+
+        relation = compare_dates(dt1, dt2)
+        delta = dt2 - dt1  # dt2 minus dt1
+
+        # Print concise comparison
+        if relation == "equal":
+                print("Dates are equal.")
+        elif relation == "earlier":
+                print("First date is earlier than second date.")
+        else:
+                print("First date is later than second date.")
+
+        # Show parsed values
+        if args.show_iso:
+                print(f"Parsed date1: {dt1.isoformat()}")
+                print(f"Parsed date2: {dt2.isoformat()}")
+        else:
+                print(f"Parsed date1: {dt1}")
+                print(f"Parsed date2: {dt2}")
+
+        # Show difference
+        print(f"Difference (dt2 - dt1): {human_timedelta(delta)}")
+        print(f"Total days: {abs(delta.days)}")
+        print(f"Total seconds: {abs(int(delta.total_seconds()))}")
+        # approximate calendar difference
+        print(f"Approx. calendar difference: {approximate_years_months(dt1, dt2)}")
+
+
+if __name__ == "__main__":
+        main()
