@@ -4,6 +4,6 @@ public class AddStrings {
         String second = "bbb";
         String third = "cccccc";
         String result = first + second + third;
-        System.out.println("Result:mmmmmmmmmmmmm " + result);
+        System.out.println("Result:mmmmmpppppmmmmmmmm " + result);
     }
 }
