@@ -26,8 +26,8 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:
-        print("Usage: python parse_utc_date.py <ISO-8601 timestamp>")
+        print("Usagegggggggggggggg: python parse_utc_date.py <ISO-8601 timestamp>")
         raise SystemExit(1)
 
     parsed = parse_utc_datetime(sys.argv[1])
-    print(f"Parsed datetime: {parsed.isoformat()}")
+    print("wwwwwwwwwwwwwwwwParsed datetime: {parsed.isoformat()}")
