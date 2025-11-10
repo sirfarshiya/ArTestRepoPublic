@@ -24,3 +24,17 @@ python parse_utc_date.py 2024-05-20T13:45:00Z
 ```
 
 The script returns a timezone-aware `datetime` object that must be in UTC.
+
+## GreenBasket vegetable ordering site
+
+Open `veggie-order-site/index.html` in your browser to try the GreenBasket
+ordering experience. The page lets you:
+
+- Choose from a curated list of vegetables with live price calculations.
+- Enter customer delivery details and preferred delivery slot.
+- Pick a payment method (card, UPI, or cash on delivery) with contextual
+  fields for secure collection.
+- Generate an on-screen confirmation that summarises the order total and
+  delivery information.
+
+Because this is a static demo, the order form does not submit to a backend.
