@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GreenBasket &mdash; Fresh Vegetable Ordering</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__content">
+        <h1>GreenBasket</h1>
+        <p>Your neighbourhood hub for farm-fresh vegetables.</p>
+        <a class="hero__cta" href="#order">Start your order</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="info">
+        <div class="info__card">
+          <h2>Same-day delivery</h2>
+          <p>
+            Place your order before 2&nbsp;PM and we will deliver it to your
+            doorstep the very same evening.
+          </p>
+        </div>
+        <div class="info__card">
+          <h2>Trusted local farmers</h2>
+          <p>
+            We partner with organic growers in the city limits to bring the
+            crispest vegetables straight to you.
+          </p>
+        </div>
+        <div class="info__card">
+          <h2>Multiple payment options</h2>
+          <p>
+            Pay securely online using card or UPI, or opt for hassle-free cash
+            on delivery.
+          </p>
+        </div>
+      </section>
+
+      <section id="order" class="order">
+        <h2>Order fresh vegetables</h2>
+        <p class="order__intro">
+          Choose your vegetables, share delivery details, and confirm your
+          payment &mdash; all in one place.
+        </p>
+
+        <form id="order-form" class="order__form" novalidate>
+          <fieldset class="order__fieldset">
+            <legend>1. Select vegetables</legend>
+            <div id="vegetable-list" class="vegetable-list"></div>
+            <div class="order__summary">
+              <span>Subtotal</span>
+              <strong id="order-subtotal">₹0.00</strong>
+            </div>
+            <div class="order__summary">
+              <span>Delivery fee</span>
+              <strong id="delivery-fee">₹40.00</strong>
+            </div>
+            <div class="order__summary order__summary--total">
+              <span>Order total</span>
+              <strong id="order-total">₹40.00</strong>
+            </div>
+          </fieldset>
+
+          <fieldset class="order__fieldset">
+            <legend>2. Delivery details</legend>
+            <div class="form-grid">
+              <label class="form-field">
+                <span>Full name</span>
+                <input type="text" name="name" required placeholder="Your name" />
+              </label>
+              <label class="form-field">
+                <span>Phone number</span>
+                <input
+                  type="tel"
+                  name="phone"
+                  required
+                  pattern="[0-9]{10}"
+                  placeholder="10-digit mobile"
+                />
+              </label>
+              <label class="form-field">
+                <span>Email address</span>
+                <input type="email" name="email" required placeholder="you@example.com" />
+              </label>
+              <label class="form-field form-field--full">
+                <span>Delivery address</span>
+                <textarea
+                  name="address"
+                  required
+                  rows="3"
+                  placeholder="Apartment, street, area, city"
+                ></textarea>
+              </label>
+              <label class="form-field">
+                <span>Preferred delivery slot</span>
+                <select name="slot" required>
+                  <option value="">Select a slot</option>
+                  <option>8 AM &ndash; 11 AM</option>
+                  <option>11 AM &ndash; 2 PM</option>
+                  <option>3 PM &ndash; 6 PM</option>
+                  <option>6 PM &ndash; 9 PM</option>
+                </select>
+              </label>
+              <label class="form-field">
+                <span>Delivery notes (optional)</span>
+                <input type="text" name="notes" placeholder="Landmark, instructions" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="order__fieldset">
+            <legend>3. Payment</legend>
+            <div class="payment-options">
+              <label class="payment-card">
+                <input type="radio" name="payment" value="card" required />
+                <span>Credit / Debit card</span>
+              </label>
+              <label class="payment-card">
+                <input type="radio" name="payment" value="upi" />
+                <span>UPI</span>
+              </label>
+              <label class="payment-card">
+                <input type="radio" name="payment" value="cod" />
+                <span>Cash on delivery</span>
+              </label>
+            </div>
+
+            <div id="payment-extra" class="payment-extra"></div>
+          </fieldset>
+
+          <button type="submit" class="submit-btn">Confirm order</button>
+        </form>
+      </section>
+
+      <section class="faq">
+        <h2>Frequently asked questions</h2>
+        <details>
+          <summary>Where do you deliver?</summary>
+          <p>
+            We currently deliver within a 12&nbsp;km radius of our central
+            warehouse in Greenfield City. Enter your address to verify coverage
+            during checkout.
+          </p>
+        </details>
+        <details>
+          <summary>How do I track my order?</summary>
+          <p>
+            Once your payment is confirmed, you will receive a tracking link by
+            SMS and email with live updates until the order reaches you.
+          </p>
+        </details>
+        <details>
+          <summary>Can I modify my order?</summary>
+          <p>
+            Absolutely! Reach out to us within one hour of placing the order and
+            we will update the items or delivery slot for you.
+          </p>
+        </details>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; <span id="year"></span> GreenBasket. Fresh vegetables, delivered with care.</p>
+      <p class="footer__contact">Questions? Call us at <a href="tel:+919876543210">+91 98765 43210</a>.</p>
+    </footer>
+
+    <dialog id="confirmation-modal" class="confirmation">
+      <form method="dialog" class="confirmation__content">
+        <h3>Thank you for your order!</h3>
+        <p>
+          We have sent a confirmation to <span id="confirm-email"></span> and
+          will deliver your vegetables to <span id="confirm-address"></span> in
+          the selected slot.
+        </p>
+        <p class="confirmation__total">
+          Total payable: <strong id="confirm-total"></strong>
+        </p>
+        <button type="submit" class="submit-btn">Close</button>
+      </form>
+    </dialog>
+
+    <script src="script.js"></script>
+  </body>
+</html>
